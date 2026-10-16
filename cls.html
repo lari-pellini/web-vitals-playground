@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLS demo · Web Vitals Playground</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="vitals.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <nav><a href="./">← All demos</a><a href="lcp.html">LCP</a><a href="cls.html">CLS</a><a href="inp.html">INP</a></nav>
+
+    <section class="explain">
+      <p id="label"></p>
+      <p id="why"></p>
+      <p class="toggle"><a id="toggle" href="#"></a></p>
+    </section>
+
+    <div id="promo-area"></div>
+
+    <h1>How to photograph products with natural light</h1>
+    <img id="photo" alt="Product photo of a white sneaker on a seamless background">
+    <p>Try to start reading this paragraph right away. In the bad version, a promo banner and a photo arrive a moment later and push the text down while you read — that jump is a layout shift.</p>
+
+    <p>Natural light from a window is soft, free and flattering. Place the product about one metre from the window, use a white card as a reflector on the opposite side, and turn off the room lights to avoid mixed colour temperatures.</p>
+    <p>A seamless background (a curved sheet of paper works) removes the horizon line and keeps attention on the product. Shoot slightly above the product's height for a natural perspective.</p>
+    <p>Finally, keep the same setup for every product in a collection. Consistent light and framing make a catalogue look professional and help shoppers compare items quickly.</p>
+  </main>
+
+  <script>
+    var good = new URLSearchParams(location.search).get('version') === 'good';
+    document.getElementById('label').innerHTML = good
+      ? '<span class="badge good">good</span> Space is reserved for the banner and the image.'
+      : '<span class="badge bad">bad</span> The banner and the image load late without reserved space.';
+    document.getElementById('why').textContent = good
+      ? 'Fix: a min-height slot for the banner and width/height attributes on the <img>, so the browser knows the aspect ratio before the file arrives.'
+      : 'Content injected above what the reader is looking at, plus an image with no width/height, makes everything below jump.';
+    var toggle = document.getElementById('toggle');
+    toggle.href = '?version=' + (good ? 'bad' : 'good');
+    toggle.textContent = good ? 'See the bad version →' : 'See the fixed version →';
+
+    var photo = document.getElementById('photo');
+    var area = document.getElementById('promo-area');
+    if (good) {
+      area.className = 'promo-slot';
+      photo.width = 1200;
+      photo.height = 600;
+    }
+
+    // Simulate a late ad/promo script and a slow image.
+    setTimeout(function () {
+      var promo = document.createElement('div');
+      promo.className = 'promo';
+      promo.textContent = '🌞 Summer sale: 20% off all lighting kits this week!';
+      area.appendChild(promo);
+    }, 700);
+
+    setTimeout(function () {
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600">' +
+        '<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5f5f4"/><stop offset="1" stop-color="#d6d3d1"/></linearGradient></defs>' +
+        '<rect width="1200" height="600" fill="url(#g)"/>' +
+        '<ellipse cx="600" cy="470" rx="300" ry="30" fill="#a8a29e" opacity=".5"/>' +
+        '<path d="M380 430 Q390 320 520 300 L700 290 Q800 300 820 360 L830 430 Z" fill="#fff" stroke="#78716c" stroke-width="6"/>' +
+        '<rect x="370" y="425" width="470" height="30" rx="12" fill="#e7e5e4" stroke="#78716c" stroke-width="6"/></svg>';
+      photo.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    }, 1400);
+  </script>
+</body>
+</html>

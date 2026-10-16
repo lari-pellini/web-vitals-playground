@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Web Vitals Playground</title>
+  <meta name="description" content="Side-by-side demos of bad and good LCP, CLS and INP, with a live Core Web Vitals overlay. Learn what hurts page experience and how to fix it.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="wrap">
+    <h1>Web Vitals Playground</h1>
+    <p>Core Web Vitals are part of Google's page experience signals — and, more importantly, they are what people <em>feel</em> when a page is slow, jumpy or unresponsive. Each demo below has a <span class="badge bad">bad</span> and a <span class="badge good">good</span> version, with a live overlay measuring the metric.</p>
+
+    <h2>Demos</h2>
+    <ul>
+      <li><strong>LCP — Largest Contentful Paint</strong> (loading): <a href="lcp.html?version=bad">bad</a> · <a href="lcp.html?version=good">good</a></li>
+      <li><strong>CLS — Cumulative Layout Shift</strong> (visual stability): <a href="cls.html?version=bad">bad</a> · <a href="cls.html?version=good">good</a></li>
+      <li><strong>INP — Interaction to Next Paint</strong> (responsiveness): <a href="inp.html?version=bad">bad</a> · <a href="inp.html?version=good">good</a></li>
+    </ul>
+
+    <h2>Thresholds</h2>
+    <table>
+      <thead><tr><th>Metric</th><th>Good</th><th>Needs improvement</th><th>Poor</th></tr></thead>
+      <tbody>
+        <tr><td>LCP</td><td>≤ 2.5 s</td><td>≤ 4 s</td><td>&gt; 4 s</td></tr>
+        <tr><td>CLS</td><td>≤ 0.1</td><td>≤ 0.25</td><td>&gt; 0.25</td></tr>
+        <tr><td>INP</td><td>≤ 200 ms</td><td>≤ 500 ms</td><td>&gt; 500 ms</td></tr>
+      </tbody>
+    </table>
+
+    <p>Best viewed in Chrome or Edge. Source code and explanations on <a href="https://github.com/lari-pellini/web-vitals-playground">GitHub</a>.</p>
+  </main>
+  <script src="vitals.js"></script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>INP demo · Web Vitals Playground</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="vitals.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <nav><a href="./">← All demos</a><a href="lcp.html">LCP</a><a href="cls.html">CLS</a><a href="inp.html">INP</a></nav>
+
+    <section class="explain">
+      <p id="label"></p>
+      <p id="why"></p>
+      <p class="toggle"><a id="toggle" href="#"></a></p>
+    </section>
+
+    <div class="product">
+      <h1>Softbox lighting kit</h1>
+      <p>Two 50×70 cm softboxes with daylight bulbs. Click the button a few times and watch INP in the corner.</p>
+      <button type="button" id="add">Add to cart</button>
+      <p>Items in cart: <span class="cart-count" id="count">0</span></p>
+    </div>
+  </main>
+
+  <script>
+    var good = new URLSearchParams(location.search).get('version') === 'good';
+    document.getElementById('label').innerHTML = good
+      ? '<span class="badge good">good</span> The click updates the screen first, then does the heavy work.'
+      : '<span class="badge bad">bad</span> The click handler runs ~550 ms of work before the screen can update.';
+    document.getElementById('why').textContent = good
+      ? 'Fix: show feedback immediately and defer analytics, recommendations and other non-urgent work until after the next paint (requestAnimationFrame + setTimeout, or scheduler.yield()).'
+      : 'Typical culprits: analytics/tag-manager callbacks, heavy re-renders and synchronous recommendation logic running inside the click handler.';
+    var toggle = document.getElementById('toggle');
+    toggle.href = '?version=' + (good ? 'bad' : 'good');
+    toggle.textContent = good ? 'See the bad version →' : 'See the fixed version →';
+
+    var count = 0;
+    var button = document.getElementById('add');
+    var counter = document.getElementById('count');
+
+    // Stand-in for tracking pixels, cart recalculation, recommendation widgets…
+    function heavyWork(ms) {
+      var end = performance.now() + ms;
+      while (performance.now() < end) { /* busy */ }
+    }
+
+    function updateUi() {
+      count += 1;
+      counter.textContent = String(count);
+      button.textContent = 'Added ✓';
+    }
+
+    button.addEventListener('click', function () {
+      if (good) {
+        updateUi();
+        requestAnimationFrame(function () {
+          setTimeout(function () { heavyWork(550); }, 0);
+        });
+      } else {
+        heavyWork(550);
+        updateUi();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LCP demo · Web Vitals Playground</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="vitals.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <nav><a href="./">← All demos</a><a href="lcp.html">LCP</a><a href="cls.html">CLS</a><a href="inp.html">INP</a></nav>
+
+    <section class="explain">
+      <p id="label"></p>
+      <p id="why"></p>
+      <p class="toggle"><a id="toggle" href="#"></a></p>
+    </section>
+
+    <div id="hero-root"></div>
+
+    <p>Below the hero there is regular content. LCP only cares about the biggest thing in the first viewport: here, the hero block above.</p>
+  </main>
+
+  <template id="hero-template">
+    <section class="hero">
+      <h1>Product photos that sell</h1>
+      <p>Light, background and framing tips for small online stores — tested on real catalogues.</p>
+    </section>
+  </template>
+
+  <script>
+    var good = new URLSearchParams(location.search).get('version') === 'good';
+    document.getElementById('label').innerHTML = good
+      ? '<span class="badge good">good</span> The hero is in the HTML the server sends.'
+      : '<span class="badge bad">bad</span> The hero is rendered by JavaScript after a slow API call.';
+    document.getElementById('why').textContent = good
+      ? 'Fix: render the main content on the server (or statically) and keep the critical path free of blocking requests. For image heroes, add fetchpriority="high" and never lazy-load them.'
+      : 'Client-side rendering waits for the JS bundle, then for data, before the biggest element can paint. Here we simulate a 4.2 s round trip.';
+    var toggle = document.getElementById('toggle');
+    toggle.href = '?version=' + (good ? 'bad' : 'good');
+    toggle.textContent = good ? 'See the bad version →' : 'See the fixed version →';
+
+    var root = document.getElementById('hero-root');
+    var hero = document.getElementById('hero-template').content.cloneNode(true);
+    if (good) {
+      root.appendChild(hero);
+    } else {
+      root.textContent = 'Loading…';
+      setTimeout(function () {
+        root.textContent = '';
+        root.appendChild(hero);
+      }, 4200);
+    }
+  </script>
+</body>
+</html>
